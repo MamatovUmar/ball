@@ -1,21 +1,18 @@
 import * as pc from 'playcanvas'
-import { createBall, createRoad, loadAmmo, createAssets, movement } from './utilst'
+import { load, createAssets } from './utilst'
 import { Coordinates, Assets, Resources } from './types'
-import {ScriptType} from "playcanvas";
-import Movement from "./Movement";
+import Ball from "./Ball";
+import Road from "./Road";
 
 
 export default class Game {
   public app?: pc.Application
-  public ball: pc.Entity
+  public ball: any
   public camera: pc.Entity
   public assets: Assets
-  public assetListLoader: pc.AssetListLoader
   private roadStartPosition = { x: 0, y: 0, z: 0 }
   private roadCount: number = 0
   private roads: pc.Entity[] = []
-  public force: pc.Vec3 = new pc.Vec3()
-  public movement: Movement
 
   constructor(canvas: HTMLCanvasElement, resources: Resources) {
 
@@ -26,36 +23,27 @@ export default class Game {
       elementInput: new pc.ElementInput(canvas),
     })
 
-    loadAmmo(() => {
-      this.sizeSettings()
-      this.assets = createAssets(resources)
-      // @ts-ignore
-      this.assetListLoader = new pc.AssetListLoader(Object.values(this.assets), this.app.assets);
-      this.addCamera()
-      this.addLight()
-      console.log(this.app)
-      this.start()
-    });
-
+    this.assets = createAssets(resources)
+    this.sizeSettings()
+    this.start()
   }
 
   start() {
-    this.assetListLoader.load((err) => {
+    load(this.assets, this.app.assets, (err) => {
       if (err) {
         console.error(err)
-      } else {
-        this.app.start()
-        this.movement = new Movement(1)
-        this.ball = createBall(this.assets.ball)
-        this.app.root.addChild(this.ball)
-
-        this.addNewRoad()
-        this.addNewRoad()
-        this.addNewRoad()
-
-        this.onKeydown()
-        console.log(this.roads)
+        return false
       }
+      this.app.start()
+      this.addCamera()
+      this.addLight()
+      this.addBall()
+
+      this.addNewRoad()
+      this.addNewRoad()
+      this.addNewRoad()
+
+      this.onKeydown()
     })
   }
 
@@ -66,52 +54,42 @@ export default class Game {
       z: this.roadStartPosition.z - this.roadCount * 10
     }
 
-    const road = createRoad(this.assets.road, { position })
-    this.roads.push(road)
-    this.app.root.addChild(road)
+    const road = new Road(this.assets.road, { position })
+    this.roads.push(road.entity)
+    this.app.root.addChild(road.entity)
     this.roadCount++
+  }
+
+  addBall() {
+    this.ball = new Ball(this.assets.ball)
+    this.app.root.addChild(this.ball.entity)
   }
 
   public onKeydown() {
     this.app.keyboard?.on(pc.EVENT_KEYDOWN, (e) => {
-      let forceX = 0;
-      let forceZ = 0;
+      let x = 0
+      let z = 0
 
-      switch (e.key) {
-        case 87:
-          console.log('top')
-          forceZ -= this.movement.speed
-          break
-        case 83:
-          console.log('down')
-          forceZ += this.movement.speed
-          break
-        case 65:
-          console.log('left')
-          forceX -= this.movement.speed
-          break
-        case 68:
-          console.log('right')
-          forceX += this.movement.speed
-          break
+      if (e.key === 87 && this.ball.velocity.z > -this.ball.speed) {
+        z = -this.ball.speed;
       }
 
-      this.movement.force.x = forceX;
-      this.movement.force.z = forceZ;
-
-      if (this.force.length()) {
-        const rX = Math.cos(-Math.PI * 0.5);
-        const rY = Math.sin(-Math.PI * 0.5);
-        this.movement.force.set(this.movement.force.x * rX - this.movement.force.z * rY, 0, this.movement.force.z * rX + this.movement.force.x * rY);
-
-        if (this.movement.force.length() > 0.1) {
-          this.movement.force.normalize().scale(0.1);
-        }
+      if (e.key === 83 && this.ball.velocity.z < this.ball.speed) {
+        z = this.ball.speed;
       }
 
+      if (e.key === 65 && this.ball.velocity.x > -this.ball.sideSpeed) {
+        x = -this.ball.sideSpeed;
+      }
 
-      // apply impulse to move the entity
-      this.ball.rigidbody.applyImpulse(this.movement.force);
+      if (e.key === 68 && this.ball.velocity.x < this.ball.sideSpeed) {
+        x = this.ball.sideSpeed;
+      }
+
+      this.ball.force.z = z
+      this.ball.force.x = x
+
+      this.ball.move()
     })
   }
 

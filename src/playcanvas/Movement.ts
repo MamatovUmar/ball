@@ -22,6 +22,10 @@ export default class Movement {
   }
 
   public get speed() {
-    return 0.1
+    return 2
+  }
+
+  public get sideSpeed() {
+    return this.speed / 3
   }
 }

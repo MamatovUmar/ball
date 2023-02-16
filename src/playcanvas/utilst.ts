@@ -1,5 +1,6 @@
 import * as pc from "playcanvas";
 import {Props, Coordinates, Resources, Assets} from './types'
+import {app} from "playcanvas";
 
 const DEFAULT_POSITION: Coordinates = { x: 0, y: 0, z: 0 }
 const DEFAULT_SCALE: Coordinates = { x: 2, y: 0.1, z: 10 }
@@ -42,8 +43,8 @@ export const createBall = (asset: pc.Asset) => {
     radius: 0.15
   })
 
-  ball.addComponent('script')
-  ball.script.create('movement')
+  // ball.addComponent('script')
+  // ball.script.create('movement')
 
   return ball
 }
@@ -76,14 +77,18 @@ export const createRoad = (asset: pc.Asset, props: Partial<Props>) => {
   return road
 }
 
-export const loadAmmo = (cb) => {
+export const load = (assets, appAssets, cb) => {
   pc.WasmModule.setConfig('Ammo', {
     glueUrl: '/lib/ammo/ammo.wasm.js',
     wasmUrl: '/lib/ammo/ammo.wasm.wasm',
     fallbackUrl: '/lib/ammo/ammo.js'
   });
 
-  pc.WasmModule.getInstance('Ammo', cb)
+  pc.WasmModule.getInstance('Ammo', () => {
+    // @ts-ignore
+    const assetsLoader = new pc.AssetListLoader(Object.values(assets), appAssets)
+    assetsLoader.load(cb)
+  })
 }
 
 export const createAssets = (resources: Resources): Assets => ({
@@ -99,8 +104,8 @@ export const createAssets = (resources: Resources): Assets => ({
 })
 
 export const movement = (speed = 0.1) => {
-  const script = pc.createScript('movement')
-  script.attributes.add('speed', {
+  const MovementScript = pc.createScript('movement')
+  MovementScript.attributes.add('speed', {
     type: 'number',
     default: speed,
     min: 0.05,
@@ -109,9 +114,9 @@ export const movement = (speed = 0.1) => {
     description: 'Controls the movement speed'
   })
 
-  script.prototype.initialize = function() {
+  MovementScript.prototype.initialize = function() {
     this.force = new pc.Vec3();
   }
 
-  return script
+  return MovementScript
 }
