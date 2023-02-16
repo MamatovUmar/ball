@@ -1,8 +1,8 @@
 import * as pc from 'playcanvas'
 
-const Movement = pc.createScript('movement');
+const MovementScript = pc.createScript('movement');
 
-Movement.attributes.add('speed', {
+MovementScript.attributes.add('speed', {
   type: 'number',
   default: 0.1,
   min: 0.05,
@@ -12,12 +12,12 @@ Movement.attributes.add('speed', {
 });
 
 // initialize code called once per entity
-Movement.prototype.initialize = function() {
+MovementScript.prototype.initialize = function() {
   this.force = new pc.Vec3();
 };
 
 // update code called every frame
-Movement.prototype.update = function(dt) {
+MovementScript.prototype.update = function(dt) {
   let forceX = 0;
   let forceZ = 0;
 
