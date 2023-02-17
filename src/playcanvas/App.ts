@@ -3,12 +3,14 @@ import { load, createAssets } from './utilst'
 import { Coordinates, Assets, Resources } from './types'
 import Ball from "./Ball";
 import Road from "./Road";
+import Camera from "./Camera";
+import Barrier from "./Barrier";
 
 
 export default class Game {
   public app?: pc.Application
   public ball: any
-  public camera: pc.Entity
+  public camera: Camera
   public assets: Assets
   private roadStartPosition = { x: 0, y: 0, z: 0 }
   private roadCount: number = 0
@@ -43,7 +45,11 @@ export default class Game {
       this.addNewRoad()
       this.addNewRoad()
 
+      const barrier = new Barrier()
+      this.app.root.addChild(barrier.entity)
+
       this.onKeydown()
+      this.onUpdate()
     })
   }
 
@@ -97,11 +103,17 @@ export default class Game {
     this.app.keyboard?.off(pc.EVENT_KEYDOWN)
   }
 
-  // public onUpdate() {
-  //   this.app.on("update", (dt) => {
-  //
-  //   })
-  // }
+  public onUpdate() {
+    this.app.on("update", (dt) => {
+      const pos = this.ball.getPosition
+      pos.y = 1;
+      pos.z += 1.5;
+
+      // console.log(pos)
+
+      this.camera.changePosition(pos)
+    })
+  }
 
   sizeSettings() {
     if (!this.app) return
@@ -121,17 +133,8 @@ export default class Game {
   }
 
   public addCamera() {
-    this.camera = new pc.Entity("camera");
-    this.camera.addComponent("camera", {
-      clearColor: new pc.Color(255, 255, 255, 0),
-    });
-
-    this.camera.setPosition(0, 2, 5);
-    this.camera.lookAt(0, 1, 3);
-    this.camera.rotate(0, 2, 0)
-    // camera.rotate(0, 0, 4)1
-    this.camera.setLocalScale(1, 1, 1)
-    this.app.root.addChild(this.camera);
+    this.camera = new Camera()
+    this.app.root.addChild(this.camera.entity)
   }
 }
 

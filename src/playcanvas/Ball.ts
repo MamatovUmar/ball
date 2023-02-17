@@ -59,4 +59,8 @@ export default class Ball {
       material: this.material
     })
   }
+
+  public get getPosition() {
+    return this.entity.getPosition()
+  }
 }
