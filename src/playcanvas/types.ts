@@ -11,9 +11,10 @@ export interface Props {
 }
 
 export interface Assets {
-  ball: pc.Asset,
-  movement?: pc.Asset,
+  ball: pc.Asset
+  movement?: pc.Asset
   road: pc.Asset
+  collectSound: pc.Asset
 }
 
 export interface Resources {

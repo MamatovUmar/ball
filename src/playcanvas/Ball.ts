@@ -26,8 +26,8 @@ export default class Ball {
     this.addRender()
     this.addCollision()
 
-    this.entity.setPosition(0, 1, 0)
-    this.entity.setLocalScale(0.3, 0.3, 0.3)
+    this.entity.setPosition(0, 1, 3)
+    this.entity.setLocalScale(0.2, 0.2, 0.2)
   }
 
   public move() {
@@ -41,7 +41,7 @@ export default class Ball {
   private addCollision() {
     this.entity.addComponent('collision', {
       type: "sphere",
-      radius: 0.15
+      radius: 0.1
     })
   }
 

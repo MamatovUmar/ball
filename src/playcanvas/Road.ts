@@ -1,7 +1,8 @@
 import * as pc from 'playcanvas'
 import { createAssetMaterial } from './utilst'
-import { Coordinates, Props } from "./types";
+import {Assets, Coordinates, Props} from "./types";
 import Barrier from "./Barrier";
+import Coin from "./Coin";
 
 const DEFAULT_POSITION: Coordinates = { x: 0, y: 0, z: 5 }
 const DEFAULT_SCALE: Coordinates = { x: 2, y: 0.1, z: 10 }
@@ -15,9 +16,13 @@ export default class Road {
   public material: pc.StandardMaterial
   private leftBarrier: Barrier
   private rightBarrier: Barrier
+  public assets: Assets
+  app: pc.Application
 
-  constructor(asset: pc.Asset, props: Partial<Props>) {
+  constructor(app: pc.Application, assets: Assets, props: Partial<Props>) {
+    this.app = app
     this.position = props?.position ?? DEFAULT_POSITION
+    this.assets = assets
     this.scale = props?.scale ?? DEFAULT_SCALE
     this.rotate = props?.rotate ?? DEFAULT_ROTATE
     this.entity = new pc.Entity()
@@ -25,7 +30,7 @@ export default class Road {
     this.rightBarrier = new Barrier({ x: 0.5, y: 0.2, z: 0 })
     this.entity.addChild(this.leftBarrier.entity)
     this.entity.addChild(this.rightBarrier.entity)
-    this.material = createAssetMaterial(asset)
+    this.material = createAssetMaterial(assets.road)
 
     this.create()
   }
@@ -38,6 +43,11 @@ export default class Road {
     this.entity.setPosition(this.position.x, this.position.y, this.position.z)
     this.entity.setLocalScale(this.scale.x, this.scale.y, this.scale.z)
     this.entity.rotate(this.rotate.x, this.rotate.y, this.rotate.z)
+  }
+
+  addCoin(position: Coordinates) {
+    const coin = new Coin(this.app, position, this.assets.collectSound)
+    this.entity.addChild(coin.entity)
   }
 
   render() {

@@ -9,12 +9,12 @@ export default class Camera {
 
     this.entity.addComponent("camera", {
       clearColor: new pc.Color(255, 255, 255, 0),
-    });
+      farClip: 50
+    })
 
-    this.entity.setPosition(0, 2, 5);
-    this.entity.lookAt(0, 1, 3);
+    this.entity.setPosition(0, 2, 5)
+    this.entity.lookAt(0, 1, 3)
     this.entity.rotate(0, 2, 0)
-    this.entity.setLocalScale(1, 1, 1)
   }
 
   changePosition(pos) {

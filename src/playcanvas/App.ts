@@ -5,10 +5,11 @@ import Ball from "./Ball";
 import Road from "./Road";
 import Camera from "./Camera";
 import Barrier from "./Barrier";
+import Coin from "./Coin";
 
 
 export default class Game {
-  public app?: pc.Application
+  public app: pc.Application
   public ball: any
   public camera: Camera
   public assets: Assets
@@ -51,6 +52,22 @@ export default class Game {
     })
   }
 
+  addCoin(position: Coordinates) {
+    const coin = new Coin(this.app, position, this.assets.collectSound)
+    this.app.root.addChild(coin.entity)
+  }
+
+  addCoins(startPosition: number) {
+    const rand = this.getRndInteger(-8, 8)
+    for (let i = 0; i < 7; i++) {
+      this.addCoin({ x: rand, y: 0.15, z: startPosition - i })
+    }
+  }
+
+  getRndInteger(min, max) {
+    return (Math.floor(Math.random() * (max - min + 1) ) + min) / 10
+  }
+
   addNewRoad() {
     const position: Coordinates = {
       x: this.roadStartPosition.x,
@@ -58,10 +75,11 @@ export default class Game {
       z: this.roadStartPosition.z - this.roadCount * 10
     }
 
-    const road = new Road(this.assets.road, { position })
+    const road = new Road(this.app, this.assets, { position })
     this.roads.push(road.entity)
     this.app.root.addChild(road.entity)
     this.roadCount++
+    this.addCoins(position.z)
   }
 
   addBall() {
@@ -104,9 +122,9 @@ export default class Game {
   public onUpdate() {
     this.app.on("update", (dt) => {
       const pos = this.ball.getPosition
-      pos.y = 1
-      pos.z += 1.5
-      this.camera.changePosition(pos)
+      this.camera.changePosition({ x: 0, y: 1, z: pos.z + 1.5 })
+      this.camera.entity.translate(new pc.Vec3(pos.x, 0.3, 0))
+      this.camera.entity.lookAt(new pc.Vec3(pos.x, 0, pos.z - 1))
 
       if(Math.abs(this.ball.getPosition.z) > this.firstPos + 10) {
         this.addNewRoad()

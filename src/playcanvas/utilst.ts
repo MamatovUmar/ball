@@ -98,9 +98,9 @@ export const createAssets = (resources: Resources): Assets => ({
   road: new pc.Asset('road', 'texture', {
     url: resources.road
   }),
-  // movement: new pc.Asset('movement', 'script', {
-  //   url: resources.movementScript
-  // })
+  collectSound: new pc.Asset('collect', 'audio', {
+    url: resources.collectSound
+  })
 })
 
 export const movement = (speed = 0.1) => {
