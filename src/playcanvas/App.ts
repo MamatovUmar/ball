@@ -15,6 +15,7 @@ export default class Game {
   private roadStartPosition = { x: 0, y: 0, z: 0 }
   private roadCount: number = 0
   private roads: pc.Entity[] = []
+  private firstPos = 0
 
   constructor(canvas: HTMLCanvasElement, resources: Resources) {
 
@@ -44,9 +45,6 @@ export default class Game {
       this.addNewRoad()
       this.addNewRoad()
       this.addNewRoad()
-
-      const barrier = new Barrier()
-      this.app.root.addChild(barrier.entity)
 
       this.onKeydown()
       this.onUpdate()
@@ -106,12 +104,15 @@ export default class Game {
   public onUpdate() {
     this.app.on("update", (dt) => {
       const pos = this.ball.getPosition
-      pos.y = 1;
-      pos.z += 1.5;
-
-      // console.log(pos)
-
+      pos.y = 1
+      pos.z += 1.5
       this.camera.changePosition(pos)
+
+      if(Math.abs(this.ball.getPosition.z) > this.firstPos + 10) {
+        this.addNewRoad()
+        this.destroyFirstRoad()
+        this.firstPos += 10
+      }
     })
   }
 
@@ -123,6 +124,14 @@ export default class Game {
     window.addEventListener('resize', (e) => {
       this.app.resizeCanvas( 500, 500)
     })
+  }
+
+  destroyFirstRoad() {
+    if (this.roads.length > 3) {
+      const f = this.roads.shift()
+      f.destroy()
+    }
+
   }
 
   public addLight() {

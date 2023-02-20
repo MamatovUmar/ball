@@ -1,20 +1,21 @@
 import * as pc from 'playcanvas'
 import { createMaterial } from './utilst'
+import { Coordinates } from "./types";
 
 export default class Barrier {
   public entity: pc.Entity
   public material: pc.StandardMaterial
   public color: pc.Color
 
-  constructor() {
+  constructor(position: Coordinates) {
     this.entity = new pc.Entity()
     this.color = new pc.Color(237,0,0)
     this.material = createMaterial(this.color)
     this.render()
     this.addRigidBody()
     this.addCollision()
-    this.entity.setPosition(-1.005, 0.1, 0)
-    this.entity.setLocalScale(0.01, 0.1, 10)
+    this.entity.setPosition(position.x, position.y, position.z)
+    this.entity.setLocalScale(0.001, 0.1, 1)
   }
 
   render() {

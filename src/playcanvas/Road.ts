@@ -1,8 +1,9 @@
 import * as pc from 'playcanvas'
 import { createAssetMaterial } from './utilst'
 import { Coordinates, Props } from "./types";
+import Barrier from "./Barrier";
 
-const DEFAULT_POSITION: Coordinates = { x: 0, y: 0, z: 0 }
+const DEFAULT_POSITION: Coordinates = { x: 0, y: 0, z: 5 }
 const DEFAULT_SCALE: Coordinates = { x: 2, y: 0.1, z: 10 }
 const DEFAULT_ROTATE: Coordinates = { x: 0, y: 0, z: 0 }
 
@@ -12,12 +13,18 @@ export default class Road {
   private rotate: Coordinates
   public entity: pc.Entity
   public material: pc.StandardMaterial
+  private leftBarrier: Barrier
+  private rightBarrier: Barrier
 
   constructor(asset: pc.Asset, props: Partial<Props>) {
     this.position = props?.position ?? DEFAULT_POSITION
     this.scale = props?.scale ?? DEFAULT_SCALE
     this.rotate = props?.rotate ?? DEFAULT_ROTATE
     this.entity = new pc.Entity()
+    this.leftBarrier = new Barrier({ x: -0.5, y: 0.2, z: 0 })
+    this.rightBarrier = new Barrier({ x: 0.5, y: 0.2, z: 0 })
+    this.entity.addChild(this.leftBarrier.entity)
+    this.entity.addChild(this.rightBarrier.entity)
     this.material = createAssetMaterial(asset)
 
     this.create()

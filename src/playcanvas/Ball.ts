@@ -26,7 +26,7 @@ export default class Ball {
     this.addRender()
     this.addCollision()
 
-    this.entity.setPosition(0, 1, 2)
+    this.entity.setPosition(0, 1, 0)
     this.entity.setLocalScale(0.3, 0.3, 0.3)
   }
 
