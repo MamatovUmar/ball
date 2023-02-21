@@ -3,6 +3,7 @@ import { createAssetMaterial } from './utilst'
 import {Assets, Coordinates, Props} from "./types";
 import Barrier from "./Barrier";
 import Coin from "./Coin";
+import Obstacle from "./Obstacle";
 
 const DEFAULT_POSITION: Coordinates = { x: 0, y: 0, z: 5 }
 const DEFAULT_SCALE: Coordinates = { x: 2, y: 0.1, z: 10 }
@@ -43,11 +44,12 @@ export default class Road {
     this.entity.setPosition(this.position.x, this.position.y, this.position.z)
     this.entity.setLocalScale(this.scale.x, this.scale.y, this.scale.z)
     this.entity.rotate(this.rotate.x, this.rotate.y, this.rotate.z)
+    this.addObstacles()
   }
 
-  addCoin(position: Coordinates) {
-    const coin = new Coin(this.app, position, this.assets.collectSound)
-    this.entity.addChild(coin.entity)
+  addObstacles() {
+    const ob = new Obstacle()
+    this.entity.addChild(ob.entity)
   }
 
   render() {

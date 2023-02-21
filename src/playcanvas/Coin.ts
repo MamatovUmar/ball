@@ -29,6 +29,7 @@ export default class Coin {
     this.entity.setPosition(this.position.x, this.position.y, this.position.z)
     this.entity.setLocalScale(0.15, 0.02, 0.15)
     this.entity.rotate(90, 0, 0)
+    this.entity.name = 'Coin'
     this.addCollision()
     this.addSound()
     this.addListeners()
@@ -66,6 +67,7 @@ export default class Coin {
 
   private addRender() {
     this.entity.addComponent('render', {
+      name: 'coin',
       type: 'cylinder',
       material: this.material
     })

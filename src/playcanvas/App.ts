@@ -4,7 +4,6 @@ import { Coordinates, Assets, Resources } from './types'
 import Ball from "./Ball";
 import Road from "./Road";
 import Camera from "./Camera";
-import Barrier from "./Barrier";
 import Coin from "./Coin";
 
 
@@ -40,7 +39,8 @@ export default class Game {
       }
       this.app.start()
       this.addCamera()
-      this.addLight()
+      this.addLight(90, 0, 0)
+      this.addLight(0, 90, 0)
       this.addBall()
 
       this.addNewRoad()
@@ -79,7 +79,7 @@ export default class Game {
     this.roads.push(road.entity)
     this.app.root.addChild(road.entity)
     this.roadCount++
-    this.addCoins(position.z)
+    this.addCoins(position.z - 2)
   }
 
   addBall() {
@@ -123,8 +123,8 @@ export default class Game {
     this.app.on("update", (dt) => {
       const pos = this.ball.getPosition
       this.camera.changePosition({ x: 0, y: 1, z: pos.z + 1.5 })
-      this.camera.entity.translate(new pc.Vec3(pos.x, 0.3, 0))
-      this.camera.entity.lookAt(new pc.Vec3(pos.x, 0, pos.z - 1))
+      // this.camera.entity.translate(new pc.Vec3(pos.x, 0.3, 0))
+      this.camera.entity.lookAt(new pc.Vec3(0, 0, pos.z - 1))
 
       if(Math.abs(this.ball.getPosition.z) > this.firstPos + 10) {
         this.addNewRoad()
@@ -147,15 +147,24 @@ export default class Game {
   destroyFirstRoad() {
     if (this.roads.length > 3) {
       const f = this.roads.shift()
+      const pos = f.getPosition()
+      // @ts-ignore
+      const coins = this.app.root.find('name', 'Coin')
+      coins.forEach((e: pc.Entity) => {
+        const p = e.getPosition()
+        if (p.z > pos.z) {
+          e.destroy()
+        }
+      })
       f.destroy()
     }
 
   }
 
-  public addLight() {
+  public addLight(x: number, y: number, z: number) {
     const light = new pc.Entity("light")
     light.addComponent("light")
-    light.setEulerAngles(90, 0, 0)
+    light.setEulerAngles(x, y, z)
     this.app.root.addChild(light)
   }
 

@@ -32,14 +32,10 @@ const assets = {
 const createGame = () => {
   if (!canvas) return
   game.value = new Game(canvas.value, assets)
-
-  // game.value.start()
 }
 
 onMounted(() => {
-  // preloadModules(() => {
-    createGame()
-  // })
+  createGame()
 })
 
 onBeforeUnmount(() => {
