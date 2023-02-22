@@ -16,6 +16,8 @@ export default class Game {
   private roadCount: number = 0
   private roads: pc.Entity[] = []
   private firstPos = 0
+  public score = 0
+  public textBasic: pc.Entity
 
   constructor(canvas: HTMLCanvasElement, resources: Resources) {
 
@@ -47,13 +49,15 @@ export default class Game {
       this.addNewRoad()
       this.addNewRoad()
 
+      this.addScreen()
+
       this.onKeydown()
       this.onUpdate()
     })
   }
 
   addCoin(position: Coordinates) {
-    const coin = new Coin(this.app, position, this.assets.collectSound)
+    const coin = new Coin(this, position, this.assets.collectSound)
     this.app.root.addChild(coin.entity)
   }
 
@@ -83,7 +87,7 @@ export default class Game {
   }
 
   addBall() {
-    this.ball = new Ball(this.assets.ball)
+    this.ball = new Ball(this.assets.ball, 2.2)
     this.app.root.addChild(this.ball.entity)
   }
 
@@ -91,6 +95,7 @@ export default class Game {
     this.app.keyboard?.on(pc.EVENT_KEYDOWN, (e) => {
       let x = 0
       let z = 0
+      let y = 0
 
       if (e.key === 87 && this.ball.velocity.z > -this.ball.speed) {
         z = -this.ball.speed;
@@ -108,8 +113,13 @@ export default class Game {
         x = this.ball.sideSpeed;
       }
 
+      if (e.key === 32 && this.ball.force.y === 0) {
+        y = 1.5
+      }
+
       this.ball.force.z = z
       this.ball.force.x = x
+      this.ball.force.y = y
 
       this.ball.move()
     })
@@ -119,12 +129,41 @@ export default class Game {
     this.app.keyboard?.off(pc.EVENT_KEYDOWN)
   }
 
+  public addScreen() {
+    const screen = new pc.Entity()
+    screen.addComponent("screen", {
+      referenceResolution: new pc.Vec2(280, 220),
+      scaleBlend: 0.5,
+      scaleMode: pc.SCALEMODE_BLEND,
+      screenSpace: true
+    })
+
+    this.textBasic = new pc.Entity()
+    this.textBasic.setLocalPosition(-5, 1, 0)
+    this.textBasic.addComponent("element", {
+      pivot: new pc.Vec2(0.5, 0.5),
+      anchor: new pc.Vec4(-0.4, 0.5, 0.5, 1.2),
+      fontAsset: this.assets.font.id,
+      fontSize: 10,
+      text: "Score:0",
+      wrapLines: true,
+      enableMarkup: true,
+      color: pc.Color.BLUE,
+      type: pc.ELEMENTTYPE_TEXT
+    })
+    screen.addChild(this.textBasic)
+
+    this.app.root.addChild(screen)
+  }
+
   public onUpdate() {
     this.app.on("update", (dt) => {
       const pos = this.ball.getPosition
       this.camera.changePosition({ x: 0, y: 1, z: pos.z + 1.5 })
-      // this.camera.entity.translate(new pc.Vec3(pos.x, 0.3, 0))
-      this.camera.entity.lookAt(new pc.Vec3(0, 0, pos.z - 1))
+      this.camera.entity.translate(new pc.Vec3(pos.x, 0.3, 0))
+      // this.camera.entity.lookAt(new pc.Vec3(pos.x, 0, pos.z - 1))
+
+      this.textBasic.element.text = `Score: ${this.score}`
 
       if(Math.abs(this.ball.getPosition.z) > this.firstPos + 10) {
         this.addNewRoad()

@@ -44,10 +44,10 @@ export default class Road {
     this.entity.setPosition(this.position.x, this.position.y, this.position.z)
     this.entity.setLocalScale(this.scale.x, this.scale.y, this.scale.z)
     this.entity.rotate(this.rotate.x, this.rotate.y, this.rotate.z)
-    this.addObstacles()
+    this.addObstacle()
   }
 
-  addObstacles() {
+  addObstacle() {
     const ob = new Obstacle()
     this.entity.addChild(ob.entity)
   }

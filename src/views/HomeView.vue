@@ -14,7 +14,7 @@ import Ball from '@/playcanvas/Ball'
 import ballAsset from 'Images/Sphere.png'
 import roadAsset from 'Images/road.jpg'
 import collectSound from '@/assets/sounds/coin.mp3'
-import preloadModules from "../playcanvas/preload-modules";
+// import courier from '@/assets/fonts/courier.json'
 
 const x = ref(0)
 const y = ref(0)
@@ -26,7 +26,8 @@ const assets = {
   ball: ballAsset,
   road: roadAsset,
   movementScript: '/src/playcanvas/movementScript.ts',
-  collectSound
+  collectSound,
+  courier: '/src/assets/fonts/courier.json'
 }
 
 const createGame = () => {

@@ -1,16 +1,17 @@
 import * as pc from 'playcanvas'
 import { createMaterial } from "./utilst";
 import { Coordinates } from "./types";
+import App from './App'
 
 export default class Coin {
   public entity: pc.Entity
   private material: pc.StandardMaterial
   private color: pc.Color
-  private app: pc.Application
+  private app: App
   public position: Coordinates
   public sound: pc.Asset
 
-  constructor(app: pc.Application, position: Coordinates, sound: pc.Asset) {
+  constructor(app: App, position: Coordinates, sound: pc.Asset) {
     this.app = app
     this.entity = new pc.Entity()
     this.color = new pc.Color(0.8, 0.9, 0.4)
@@ -38,13 +39,14 @@ export default class Coin {
   private addListeners() {
     this.entity.collision.on('triggerenter', () => {
       this.entity.sound.play('beep')
+      this.app.score++
       this.entity.setPosition(0, -2, 0)
       setTimeout(() => {
         this.entity.destroy()
       }, 500)
     })
 
-    this.app.on('update', (dt: number) => {
+    this.app.app.on('update', (dt: number) => {
       this.entity.rotate(dt, 200 * dt, dt)
     })
   }

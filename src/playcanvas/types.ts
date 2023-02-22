@@ -15,6 +15,7 @@ export interface Assets {
   movement?: pc.Asset
   road: pc.Asset
   collectSound: pc.Asset
+  font: pc.Asset
 }
 
 export interface Resources {

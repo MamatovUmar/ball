@@ -22,7 +22,7 @@ export default class Obstacle extends Base{
 
     this.addCollision({
       type: 'box',
-      halfExtents: new pc.Vec3(0.3, 3,0.1)
+      halfExtents: new pc.Vec3(0.3, 0.3,0.1)
     })
 
     this.entity.setLocalPosition(rand, this.position.y, 0)

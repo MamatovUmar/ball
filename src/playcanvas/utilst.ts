@@ -100,6 +100,9 @@ export const createAssets = (resources: Resources): Assets => ({
   }),
   collectSound: new pc.Asset('collect', 'audio', {
     url: resources.collectSound
+  }),
+  font: new pc.Asset('font', 'font', {
+    url: resources.courier
   })
 })
 
