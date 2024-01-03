@@ -1,27 +1,21 @@
 <template>
-<!--  <input type="number" v-model="x">-->
-<!--  <input type="number" v-model="y">-->
-<!--  <input type="number" v-model="z">-->
-  <main>
+  <main class="hide-scroll">
     <canvas ref="canvas" />
   </main>
 </template>
 
 <script setup lang="ts">
-import {onBeforeUnmount, onMounted, ref, watch} from 'vue'
+import {onBeforeUnmount, onMounted, ref} from 'vue'
 import Game from '@/playcanvas/App.ts'
-import Ball from '@/playcanvas/Ball'
 import ballAsset from 'Images/Sphere.png'
 import roadAsset from 'Images/road.jpg'
 import collectSound from '@/assets/sounds/coin.mp3'
-// import courier from '@/assets/fonts/courier.json'
 
 const x = ref(0)
 const y = ref(0)
 const z = ref(0)
 const canvas = ref<HTMLCanvasElement>()
 const game = ref<Game>()
-const dtVal = ref(0)
 const assets = {
   ball: ballAsset,
   road: roadAsset,
@@ -46,5 +40,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="css">
-
+.hide-scroll {
+  overflow: hidden;
+}
 </style>
